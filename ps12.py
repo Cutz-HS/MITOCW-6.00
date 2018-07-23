@@ -266,7 +266,7 @@ class ResistantVirus(SimpleVirus):
         if self.maxBirthProb*(1-popDensity) > random.random():
             for drug in self.resistance:
                 if (1-self.mutProb) >= random.random():
-                    self.resistance[drug]=self.resistance[drug]
+                    pass
                 else:
                     self.resistance[drug]=not self.resistance[drug]
             return ResistantVirus(self.maxBirthProb, self.clearProb, self.resistance, self.mutProb)
@@ -293,6 +293,7 @@ class Patient(SimplePatient):
         # TODO
         self.viruses=viruses
         self.maxPop=maxPop
+        self.drugsList = []
         
     def addPrescription(self, newDrug):
         """
@@ -305,10 +306,7 @@ class Patient(SimplePatient):
         postcondition: list of drugs being administered to a patient is updated
         """
         # TODO
-        listOfDrugs=[]
-        if listOfDrugs.index(newDrug, 0) == -1:
-            listOfDrugs.append(newDrug)
-        return listOfDrugs
+        self.drugsList.append(newDrug)
 
     def getPrescriptions(self):
         """
@@ -318,7 +316,7 @@ class Patient(SimplePatient):
         patient.
         """
         # TODO
-        return 
+        return self.drugsList
         
     def getResistPop(self, drugResist):
         """
@@ -332,6 +330,16 @@ class Patient(SimplePatient):
         drugs in the drugResist list.
         """
         # TODO
+        resPop=0
+        for virus in self.viruses:
+            resisted = 0
+            for drug in drugResist:
+                if virus.getResistance(drug):
+                    resisted+=1
+            if resisted == len(drugResist): # can't understand
+                resPop+=1
+        return resPop
+        
 
     def update(self):
         """
@@ -353,6 +361,18 @@ class Patient(SimplePatient):
         integer)
         """
         # TODO
+        popDensity=self.getTotalPop() / float(self.maxPop)
+        newVirus=[]
+        for vr in self.viruses:
+            if not vr.doesClear():
+                newVirus.append(vr)
+                try:
+                    child=vr.reproduce(popDensity, self.getPrescriptions())
+                    newVirus.append(child)
+                except NoChildException:
+                    continue
+        self.viruses=newVirus
+        return self.getTotalPop()
 
 #
 # PROBLEM 4
@@ -369,6 +389,45 @@ def problem4():
     vs. time are plotted
     """
     # TODO
+    # Creates Virus (100)
+    virusesList=[ResistantVirus(0.1, 0.05,{'guttagonol': False}, 0.005) for i in range(100)]
+    # Creates Patient (Resistant)
+    patient=Patient(virusesList, 1000)
+    res=[]
+    virusResistent=[]
+    
+#    for sim in range(300):
+#        numVirus=patient.update()
+#        res.append(numVirus)
+#        virusResistent.append(patient.getResistPop(['guttagonol'])
+#        if sim==150:
+#            patient.addPrescription('guttagonol')
+        
+    
+    
+    for n in range(150): #150times without presription
+        numVirus=patient.update()
+        res.append(numVirus)
+        virusResistent.append(patient.getResistPop(['guttagonol']))
+        
+    ## add guttaonol
+    patient.addPrescription('guttagonol')
+    virusesList2=[ResistantVirus(0.1, 0.05, {'guttagonol': False}, 0.005) for i in range(100)]
+    patient=Patient(virusesList2, 1000)
+    for m in range(150):
+        numVirus=patient.update()
+        res.append(numVirus)
+        virusResistent.append(patient.getResistPop(['guttagonol']))
+    
+    #plotting
+    pylab.figure()
+    pylab.plot(range(1,301), res)
+    pylab.plot(range(1,301), virusResistent)
+    pylab.xticks(range(0,301,50))
+    pylab.xlabel("Time")
+    pylab.ylabel("Viruses Pop")
+    pylab.title("Prob2")
+    pylab.show()
 
 #
 # PROBLEM 5
@@ -386,7 +445,101 @@ def problem5():
     simulation).    
     """
     # TODO
+    virusesList=[ResistantVirus(0.1, 0.05,{'guttagonol': False}, 0.005) for i in range(100)]
+    # 300 steps, administered, 150 steps
+    numPatient=100
+    numCured=0
+    res=[]
+    virusRes=[]
+    for each in range(numPatient):
+        patient=Patient(virusesList, 1000)
+        for count in range(450):
+            if count==150:
+                patient.addPrescription('guttagonol')
+            numVirus = patient.update()
+            if numVirus<=50:
+                numCured+=1
+        res.append(numVirus)
+
     
+    pylab.figure()
+    pylab.hist(virusRes)
+    pylab.ylabel('Num of paitents')
+    pylab.xlabel('Pop of Viruses')
+    perCured=100*(float(numCured)/float(numPatient))
+    print("%d patients are cured (%3.2f%% is cured)" %(numCured, perCured))
+    pylab.show()
+    
+        # 150 steps, administered, 150 steps
+    numPatient=100
+    numCured=0
+    res=[]
+    virusRes=[]
+    for each in range(numPatient):
+        patient=Patient(virusesList, 1000)
+        for count in range(300):
+            if count==150:
+                patient.addPrescription('guttagonol')
+            numVirus = patient.update()
+            if numVirus<=50:
+                numCured+=1
+        res.append(numVirus)
+    
+    pylab.figure()
+    pylab.hist(virusRes)
+    pylab.ylabel('Num of paitents')
+    pylab.xlabel('Pop of Viruses')
+    perCured=100*(float(numCured)/float(numPatient))
+    print("%d patients are cured (%3.2f%% is cured)" %(numCured, perCured))
+    pylab.show()
+    
+        # 75 steps, administered, 150 steps
+    numPatient=100
+    numCured=0
+    res=[]
+    virusRes=[]
+    for each in range(numPatient):
+        patient=Patient(virusesList, 1000)
+        for count in range(225):
+            if count==150:
+                patient.addPrescription('guttagonol')
+            numVirus = patient.update()
+            if numVirus<=50:
+                numCured+=1
+        res.append(numVirus)
+    
+    pylab.figure()
+    pylab.hist(virusRes)
+    pylab.ylabel('Num of paitents')
+    pylab.xlabel('Pop of Viruses')
+    perCured=100*(float(numCured)/float(numPatient))
+    print("%d patients are cured (%3.2f%% is cured)" %(numCured, perCured))
+    pylab.show()
+    
+        # 0 steps, administered, 150 steps
+    numPatient=100
+    numCured=0
+    res=[]
+    virusRes=[]
+    for each in range(numPatient):
+        patient=Patient(virusesList, 1000)
+        for count in range(150):
+            if count==150:
+                patient.addPrescription('guttagonol')
+            numVirus = patient.update()
+            if numVirus<=50:
+                numCured+=1
+        res.append(numVirus)
+            
+    
+    pylab.figure()
+    pylab.hist(virusRes)
+    pylab.ylabel('Num of paitents')
+    pylab.xlabel('Pop of Viruses')
+    perCured=100*(float(numCured)/float(numPatient))
+    print("%d patients are cured (%3.2f%% is cured)" %(numCured, perCured))
+    pylab.show()
+        
 #
 # PROBLEM 6
 #
