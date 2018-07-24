@@ -447,98 +447,108 @@ def problem5():
     # TODO
     virusesList=[ResistantVirus(0.1, 0.05,{'guttagonol': False}, 0.005) for i in range(100)]
     # 300 steps, administered, 150 steps
-    numPatient=100
+    numPatient=200
     numCured=0
     res=[]
-    virusRes=[]
+    virusResistent=[]
     for each in range(numPatient):
         patient=Patient(virusesList, 1000)
-        for count in range(450):
+        for count in range(450,0,-1):
+            numVirus = patient.update()
             if count==150:
                 patient.addPrescription('guttagonol')
-            numVirus = patient.update()
-            if numVirus<=50:
-                numCured+=1
-        res.append(numVirus)
+                virusResistent.append(patient.getResistPop(['guttagonol']))
+            res.append(numVirus)
+        if numVirus<=50:
+            numCured+=1
 
     
     pylab.figure()
-    pylab.hist(virusRes)
-    pylab.ylabel('Num of paitents')
+    pylab.hist(virusResistent)
+    pylab.ylabel('Num of patient')
     pylab.xlabel('Pop of Viruses')
-    perCured=100*(float(numCured)/float(numPatient))
-    print("%d patients are cured (%3.2f%% is cured)" %(numCured, perCured))
+    perCured=100*(numCured/numPatient)
+    print("%d patients are cured (%2.2f%% is cured)" %(numCured, perCured))
+    print("final viruses: %d" %patient.getTotalPop())
     pylab.show()
     
-        # 150 steps, administered, 150 steps
-    numPatient=100
-    numCured=0
-    res=[]
-    virusRes=[]
-    for each in range(numPatient):
-        patient=Patient(virusesList, 1000)
-        for count in range(300):
-            if count==150:
-                patient.addPrescription('guttagonol')
-            numVirus = patient.update()
-            if numVirus<=50:
-                numCured+=1
-        res.append(numVirus)
-    
-    pylab.figure()
-    pylab.hist(virusRes)
-    pylab.ylabel('Num of paitents')
-    pylab.xlabel('Pop of Viruses')
-    perCured=100*(float(numCured)/float(numPatient))
-    print("%d patients are cured (%3.2f%% is cured)" %(numCured, perCured))
-    pylab.show()
-    
-        # 75 steps, administered, 150 steps
-    numPatient=100
-    numCured=0
-    res=[]
-    virusRes=[]
-    for each in range(numPatient):
-        patient=Patient(virusesList, 1000)
-        for count in range(225):
-            if count==150:
-                patient.addPrescription('guttagonol')
-            numVirus = patient.update()
-            if numVirus<=50:
-                numCured+=1
-        res.append(numVirus)
-    
-    pylab.figure()
-    pylab.hist(virusRes)
-    pylab.ylabel('Num of paitents')
-    pylab.xlabel('Pop of Viruses')
-    perCured=100*(float(numCured)/float(numPatient))
-    print("%d patients are cured (%3.2f%% is cured)" %(numCured, perCured))
-    pylab.show()
-    
-        # 0 steps, administered, 150 steps
-    numPatient=100
-    numCured=0
-    res=[]
-    virusRes=[]
-    for each in range(numPatient):
-        patient=Patient(virusesList, 1000)
-        for count in range(150):
-            if count==150:
-                patient.addPrescription('guttagonol')
-            numVirus = patient.update()
-            if numVirus<=50:
-                numCured+=1
-        res.append(numVirus)
-            
-    
-    pylab.figure()
-    pylab.hist(virusRes)
-    pylab.ylabel('Num of paitents')
-    pylab.xlabel('Pop of Viruses')
-    perCured=100*(float(numCured)/float(numPatient))
-    print("%d patients are cured (%3.2f%% is cured)" %(numCured, perCured))
-    pylab.show()
+#        # 150 steps, administered, 150 steps
+#    numPatient=200
+#    numCured=0
+#    res=[]
+#    virusResistent=[]
+#    for each in range(numPatient):
+#        patient=Patient(virusesList, 1000)
+#        for count in range(300,0,-1):
+#            numVirus = patient.update()
+#            if count==150:
+#                patient.addPrescription('guttagonol')
+#                virusResistent.append(patient.getResistPop(['guttagonol']))
+#            res.append(numVirus)
+#        if numVirus<=50:
+#            numCured+=1
+#
+#    
+#    pylab.figure()
+#    pylab.hist(virusResistent)
+#    pylab.ylabel('Num of patient')
+#    pylab.xlabel('Pop of Viruses')
+#    perCured=100*(numCured/numPatient)
+#    print("%d patients are cured (%2.2f%% is cured)" %(numCured, perCured))
+#    print("final viruses: %d" %res[299], numVirus)
+#    pylab.show()
+##    
+##        # 75 steps, administered, 150 steps
+#    numPatient=200
+#    numCured=0
+#    res=[]
+#    virusResistent=[]
+#    for each in range(numPatient):
+#        patient=Patient(virusesList, 1000)
+#        for count in range(225,0,-1):
+#            numVirus = patient.update()
+#            if count==150:
+#                patient.addPrescription('guttagonol')
+#                virusResistent.append(patient.getResistPop(['guttagonol']))
+#            res.append(numVirus)
+#        if numVirus<=50:
+#            numCured+=1
+#
+#    
+#    pylab.figure()
+#    pylab.hist(virusResistent)
+#    pylab.ylabel('Num of patient')
+#    pylab.xlabel('Pop of Viruses')
+#    perCured=100*(numCured/numPatient)
+#    print("%d patients are cured (%2.2f%% is cured)" %(numCured, perCured))
+#    print("final viruses: %d" %res[224], numVirus)
+#    pylab.show()
+##    
+##        # 0 steps, administered, 150 steps
+#    numPatient=200
+#    numCured=0
+#    res=[]
+#    virusResistent=[]
+#    for each in range(numPatient):
+#        patient=Patient(virusesList, 1000)
+#        for count in range(150,0,-1):
+#            numVirus = patient.update()
+#            if count==150:
+#                patient.addPrescription('guttagonol')
+#                virusResistent.append(patient.getResistPop(['guttagonol']))
+#            res.append(numVirus)
+#        if numVirus<=50:
+#            numCured+=1
+#
+#    
+#    pylab.figure()
+#    pylab.hist(virusResistent)
+#    pylab.ylabel('Viruses')
+#    pylab.xlabel('time')
+#    perCured=100*(numCured/numPatient)
+#    print("%d patients are cured (%2.2f%% is cured)" %(numCured, perCured))
+#    print("final viruses: %d" %numVirus)
+#    pylab.show()
         
 #
 # PROBLEM 6
